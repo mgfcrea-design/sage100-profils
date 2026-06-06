@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sage 100 — Fiches de droits d'accès par profil</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark-bg: #0f0f1e;
+    --card-bg: #ffffff;
+    --text-dark: #1a1a2e;
+    --text-muted: #6b7280;
+    --border: #e5e7eb;
+    --accent-1: #1b4332;
+    --accent-2: #1d3557;
+    --accent-3: #7b2d00;
+    --accent-4: #3d405b;
+    --accent-5: #2c2c54;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #f0f4f8 100%);
+    color: var(--text-dark);
+    min-height: 100vh;
+    padding: 3rem 1rem;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .header-badge {
+    display: inline-block;
+    background: var(--accent-1);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+  }
+
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3rem;
+    line-height: 1.1;
+    margin-bottom: 0.8rem;
+    color: var(--text-dark);
+  }
+
+  .header p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* GRID */
+  .profiles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  /* CARD */
+  .profile-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .profile-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--card-accent) 0%, var(--card-accent-light) 100%);
+  }
+
+  .profile-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+    border-color: var(--card-accent);
+  }
+
+  /* COLOR VARIANTS */
+  .card-gerant::before { background: linear-gradient(90deg, #1b4332 0%, #40916c 100%); }
+  .card-gerant:hover { border-color: #40916c; }
+
+  .card-commercial::before { background: linear-gradient(90deg, #1d3557 0%, #457b9d 100%); }
+  .card-commercial:hover { border-color: #457b9d; }
+
+  .card-achats::before { background: linear-gradient(90deg, #7b2d00 0%, #c75000 100%); }
+  .card-achats:hover { border-color: #c75000; }
+
+  .card-magasinier::before { background: linear-gradient(90deg, #3d405b 0%, #6b6fa8 100%); }
+  .card-magasinier:hover { border-color: #6b6fa8; }
+
+  .card-comptable::before { background: linear-gradient(90deg, #2c2c54 0%, #706fd3 100%); }
+  .card-comptable:hover { border-color: #706fd3; }
+
+  .card-icon {
+    font-size: 3rem;
+    opacity: 0.8;
+  }
+
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0.5rem 0;
+  }
+
+  .card-description {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    flex-grow: 1;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .card-cta {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+
+  .profile-card:hover .card-cta {
+    color: var(--card-accent, #1b4332);
+  }
+
+  .arrow {
+    font-size: 1.2rem;
+    transition: transform 0.3s;
+  }
+
+  .profile-card:hover .arrow {
+    transform: translateX(4px);
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .footer p {
+    line-height: 1.8;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    body { padding: 2rem 1rem; }
+    .header h1 { font-size: 2rem; }
+    .profiles-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-badge">Sage 100 Gestion Commerciale Premium</div>
+    <h1>Fiches de droits d'accès</h1>
+    <p>Sélectionnez le profil correspondant à votre poste pour accéder à la fiche de configuration des droits d'utilisation de Sage 100.</p>
+  </div>
+
+  <!-- PROFILES GRID -->
+  <div class="profiles-grid">
+
+    <!-- GÉRANT -->
+    <a href="profil_01_gerant.html" class="profile-card card-gerant">
+      <div class="card-icon">👑</div>
+      <div>
+        <h2 class="card-title">Dirigeant / Gérant</h2>
+        <p class="card-description">Accès complet aux ventes, achats, stocks, administration et services en ligne pour la gestion globale de l'entreprise.</p>
+      </div>
+      <div class="card-footer">
+        <span class="card-cta">Ouvrir le formulaire <span class="arrow">→</span></span>
+      </div>
+    </a>
+
+    <!-- COMMERCIAL -->
+    <a href="profil_02_commercial.html" class="profile-card card-commercial">
+      <div class="card-icon">💼</div>
+      <div>
+        <h2 class="card-title">Commercial / Vendeur</h2>
+        <p class="card-description">Gestion des ventes, consultation des stocks, accès au CRM et aux outils commerciaux mobiles.</p>
+      </div>
+      <div class="card-footer">
+        <span class="card-cta">Ouvrir le formulaire <span class="arrow">→</span></span>
+      </div>
+    </a>
+
+    <!-- ACHATS -->
+    <a href="profil_03_achats.html" class="profile-card card-achats">
+      <div class="card-icon">🔖</div>
+      <div>
+        <h2 class="card-title">Gestionnaire des achats</h2>
+        <p class="card-description">Gestion complète des fournisseurs, documents d'achat, réceptions et suivi des approvisionnements.</p>
+      </div>
+      <div class="card-footer">
+        <span class="card-cta">Ouvrir le formulaire <span class="arrow">→</span></span>
+      </div>
+    </a>
+
+    <!-- MAGASINIER -->
+    <a href="profil_04_magasinier.html" class="profile-card card-magasinier">
+      <div class="card-icon">🏗️</div>
+      <div>
+        <h2 class="card-title">Magasinier / Responsable stock</h2>
+        <p class="card-description">Gestion des stocks, mouvements d'articles, réceptions de marchandises et préparation des expéditions.</p>
+      </div>
+      <div class="card-footer">
+        <span class="card-cta">Ouvrir le formulaire <span class="arrow">→</span></span>
+      </div>
+    </a>
+
+    <!-- COMPTABLE -->
+    <a href="profil_05_comptable.html" class="profile-card card-comptable">
+      <div class="card-icon">🧾</div>
+      <div>
+        <h2 class="card-title">Comptable / Administration</h2>
+        <p class="card-description">Gestion financière, règlements, rapports comptables et facturation électronique.</p>
+      </div>
+      <div class="card-footer">
+        <span class="card-cta">Ouvrir le formulaire <span class="arrow">→</span></span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>
+      <strong>Mode d'emploi :</strong> Cliquez sur le profil correspondant à votre poste, puis complétez la fiche en cochant ✓ (Activer) ou ✗ (Bloquer) pour chaque fonctionnalité.<br>
+      Imprimez ou exportez en PDF, puis transmettez le document au prestataire Sage pour activation des droits utilisateur.
+    </p>
+  </div>
+
+</div>
+
+</body>
+</html>
