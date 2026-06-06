@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sage 100 — Fiche de droits : Gestionnaire des achats</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--profile-color:#7b2d00;--profile-accent:#c75000;--accent:#ffd166;--danger:#e63946;--ink:#1a1a2e;--muted:#6b7280;--border:#f0d5c8;--white:#ffffff}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',sans-serif;background:#fdf6f2;color:var(--ink);min-height:100vh;padding:2rem 1rem}
+  .page{max-width:860px;margin:0 auto;background:var(--white);border-radius:4px;box-shadow:0 2px 32px rgba(123,45,0,.12);overflow:hidden}
+  .header{background:var(--profile-color);padding:2.5rem 3rem 2rem;position:relative;overflow:hidden}
+  .header::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.05)}
+  .header::after{content:'';position:absolute;bottom:-60px;left:60px;width:140px;height:140px;border-radius:50%;background:rgba(199,80,0,.2)}
+  .header-badge{display:inline-block;background:var(--accent);color:var(--profile-color);font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.3rem .8rem;border-radius:2px;margin-bottom:1rem}
+  .header h1{font-family:'DM Serif Display',serif;font-size:2rem;color:#fff;line-height:1.15;margin-bottom:.4rem;position:relative;z-index:1}
+  .header-sub{color:#f5c6a0;font-size:.85rem;font-weight:300;position:relative;z-index:1}
+  .profile-icon{position:absolute;right:3rem;top:50%;transform:translateY(-50%);font-size:5rem;opacity:.12;z-index:0}
+  .meta-bar{background:#fdf0e8;border-bottom:1px solid var(--border);padding:1.2rem 3rem;display:flex;gap:3rem;align-items:center;flex-wrap:wrap}
+  .meta-field{display:flex;flex-direction:column;gap:.3rem}
+  .meta-field label{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .meta-field input{border:none;border-bottom:2px solid var(--border);background:transparent;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--ink);padding:.25rem 0;min-width:180px;outline:none;transition:border-color .2s}
+  .meta-field input:focus{border-color:var(--profile-accent)}
+  .intro-note{padding:1.2rem 3rem;background:#fffbeb;border-left:4px solid var(--accent);font-size:.82rem;color:#7a5c00;line-height:1.6}
+  .legend{display:flex;gap:1.5rem;padding:.8rem 3rem;background:#fdf6f2;border-top:1px solid var(--border);border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center}
+  .legend-item{display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--muted)}
+  .legend-dot{width:14px;height:14px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:white}
+  .ld-yes{background:var(--profile-accent)}.ld-no{background:var(--danger)}.ld-none{background:var(--border)}
+  .legend-tip{margin-left:auto;font-size:.72rem;color:var(--muted);font-style:italic}
+  .section{padding:1.8rem 3rem .5rem;border-bottom:1px solid var(--border)}
+  .section-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1.2rem}
+  .section-icon{width:34px;height:34px;background:var(--profile-color);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+  .section-title{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--profile-color)}
+  .options-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem 1.5rem;padding-bottom:1.4rem}
+  @media(max-width:600px){.options-grid{grid-template-columns:1fr}}
+  .option-row{display:flex;align-items:center;justify-content:space-between;padding:.6rem .8rem;border:1px solid var(--border);border-radius:6px;background:#fffaf7;transition:background .15s,border-color .15s;cursor:pointer;user-select:none;position:relative}
+  .option-row:hover{background:#fdf0e8;border-color:var(--profile-accent)}
+  .option-row.checked{background:#fde8d8;border-color:var(--profile-accent)}
+  .option-row.blocked{background:#fff5f5;border-color:#fca5a5}
+  .option-label{font-size:.82rem;color:var(--ink);flex:1;padding-right:.4rem;line-height:1.3;display:flex;align-items:center;gap:.35rem}
+  .info-icon{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:#f0d5c8;color:var(--profile-color);font-size:.6rem;font-weight:700;flex-shrink:0;cursor:help;transition:background .15s}
+  .option-row:hover .info-icon{background:var(--profile-accent);color:white}
+  .tooltip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#7b2d00;color:#fdf0e8;font-size:.75rem;line-height:1.5;padding:.6rem .9rem;border-radius:6px;width:260px;pointer-events:none;opacity:0;transition:opacity .18s;z-index:100;font-weight:400;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+  .tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#7b2d00}
+  .option-row:hover .tooltip{opacity:1}
+  .toggle-group{display:flex;gap:4px;flex-shrink:0}
+  .toggle-btn{width:28px;height:28px;border:1.5px solid var(--border);border-radius:4px;background:var(--white);font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;font-weight:600}
+  .toggle-btn.active-yes{background:var(--profile-accent);border-color:var(--profile-accent);color:white}
+  .toggle-btn.active-no{background:var(--danger);border-color:var(--danger);color:white}
+  .toggle-btn:hover{transform:scale(1.1)}
+  .obs-section{padding:1.5rem 3rem 2rem}
+  .obs-section label{display:block;font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+  .obs-section textarea{width:100%;border:1.5px solid var(--border);border-radius:6px;padding:.8rem 1rem;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--ink);resize:vertical;min-height:80px;outline:none;transition:border-color .2s;background:#fdf6f2}
+  .form-footer{background:var(--profile-color);padding:1.5rem 3rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+  .footer-info{font-size:.75rem;color:#f5c6a0;line-height:1.5}
+  .btn-print{background:var(--accent);color:var(--profile-color);border:none;padding:.7rem 1.8rem;border-radius:4px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer;transition:opacity .2s,transform .1s}
+  .btn-print:hover{opacity:.88;transform:translateY(-1px)}
+  @media print{body{background:white;padding:0}.page{box-shadow:none}.btn-print{display:none}.toggle-btn{-webkit-print-color-adjust:exact;print-color-adjust:exact}.tooltip{display:none}}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-badge">Sage 100 · Gestion Commerciale Premium</div>
+    <h1>Fiche de droits d'accès<br>Gestionnaire des achats</h1>
+    <div class="header-sub">À transmettre au prestataire pour activation des modules utilisateur</div>
+    <div class="profile-icon">🔖</div>
+  </div>
+  <div class="meta-bar">
+    <div class="meta-field"><label>Nom du profil</label><input type="text" value="Gestionnaire des achats" readonly style="font-weight:600;color:var(--profile-color)"></div>
+    <div class="meta-field"><label>Nom de l'entreprise</label><input type="text" placeholder="Saisir le nom..."></div>
+    <div class="meta-field"><label>Date de la demande</label><input type="date" id="dateField"></div>
+  </div>
+  <div class="intro-note">ℹ️ <strong>Instructions :</strong> Pour chaque fonctionnalité, cochez <strong>✓ Activer</strong> ou <strong>✗ Bloquer</strong>. Laissez vide si sans avis. Passez la souris sur le <strong>ⓘ</strong> pour obtenir une description de chaque accès.</div>
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot ld-yes">✓</span> Activer l'accès</div>
+    <div class="legend-item"><span class="legend-dot ld-no">✗</span> Bloquer l'accès</div>
+    <div class="legend-item"><span class="legend-dot ld-none"></span> Non défini</div>
+    <div class="legend-tip">💡 Survolez le ⓘ pour une description</div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-icon">📦</div><div class="section-title">Gestion des achats</div></div>
+    <div class="options-grid">
+
+      <div class="option-row" onclick="toggle(this)">
+        <span class="option-label">Liste des fournisseurs <span class="info-icon">ⓘ</span></span>
+        <div class="tooltip">Accès au répertoire complet des fournisseurs : coordonnées, délais habituels, conditions de paiement négociées et historique des commandes passées.</div>
+        <div class="toggle-group"><button class="toggle-btn" data-val="yes" onclick="setVal(event,'yes')">✓</button><button class="toggle-btn" data-val="no" onclick="setVal(event,'no')">✗</button></div>
+      </div>
+
+      <div class="option-row" onclick="toggle(this)">
+        <span class="option-label">Créer / modifier un fournisseur <span class="info-icon">ⓘ</span></span>
+        <div class="tooltip">Création de nouvelles fiches fournisseurs et modification des fiches existantes : coordonnées, RIB, conditions de paiement et paramètres comptables.</div>
+        <div class="toggle-group"><button class="toggle-btn" data-val="yes" onclick="setVal(event,'yes')">✓</button><button class="toggle-btn" data-val="no" onclick="setVal(event,'no')">✗</button></div>
+      </div>
+
+      <div class="option-row" onclick="toggle(this)">
+        <span class="option-label">Saisir un document d'achat <span class="info-icon">ⓘ</span></span>
+        <div class="tooltip">Création des demandes d'achat, bons de commande fournisseur, réceptions de marchandises et factures d'achat. Cœur du métier du gestionnaire des achats.</div>
+        <div class="toggle-group"><button class="toggle-btn" data-val="yes" onclick="setVal(event,'yes')">✓</button><button class="toggle-btn" data-val="no" onclick="setVal(event,'no')">✗</button></div>
+      </div>
+
+      <div class="option-row" onclick="toggle(this)">
+        <span class="option-label">Saisir un règlement fournisseur <span class="info-icon">ⓘ</span></span>
+        <div class="tooltip">Enregistrement des paiements effectués aux fournisseurs, suivi des échéances et lettrage avec les factures correspondantes pour maintenir la balance fournisseurs à jour.</div>
+        <div class="toggle-group"><button class="toggle-btn" data-val="yes" onclick="setVal(event,'yes')">✓</button><button class="toggle-btn" data-val="no" onclick="setVal(event,'no')">✗</button></div>
+      </div>
+
+      <div class="option-row" onclick="toggle(this)">
+        <span class="option-label">Gestion des comptes fournisseurs <span class="info-icon">ⓘ</span></span>
+        <div class="tooltip">Administration complète des fiches fournisseurs : modification des conditions, ajout de contacts, mise à jour des grilles tarifaires et paramétrage des alertes de réapprovisionnement.</div>
+        <div class="toggle-group"><button class="toggle-btn" data-val="yes" onclick="setVal(event,'yes')">✓</button><button class="toggle-btn" data-val="no" onclick="setVal(event,'no')">✗</button></div>
+      </div>
+
+      <div class="option-row" onclick="toggle(this)">
+        <span class="option-label">Consultation tarifs fournisseurs <span class="info-icon">ⓘ</span></span>
+        <div class="tooltip">Accès aux grilles de prix d'achat par fournisseur, par article et par quantité. Permet de comparer les offres et de choisir la meilleure source d'approvisionnement.</div>
+        <div class="toggle-group"><button class="toggle-btn" data-val="yes" onclick="setVal(event,'yes')">✓</button><button class="toggle-btn" data-val="no" onclick="setVal(event,'no')">✗</button></div>
+      </div>
+
+      <div class="option-row" onclick="toggle(this)">
+        <span class="option-label">Validation des bons de commande <span class="info-icon">ⓘ</span></span>
+        <div class="tooltip">Droit d'approuver les bons de commande avant leur envoi aux fournisseurs. Étape de contrôle qui déclenche officiellement l'engagement d'achat de l'entreprise.</div>
+        <div class="toggle-group"><button class="toggle-btn" data-val="yes" onclick="setVal(event,'yes')">✓</button><button class="toggle-btn" data-val="no" onclick="setVal(event,'no')">✗</button></div>
+      </div>
+
+      <div class="option-row" onclick="toggle(this)">
+        <span class="option-label">Statistiques & rapports achats <span class="info-icon">ⓘ</span></span>
+        <div class="tooltip">Tableaux de bord achats : volume commandé par fournisseur, délais de livraison moyens, taux de service et évolution des prix d'achat sur la période.</div>
+        <div class="toggle-group"><button class="toggle-btn" data-val="yes" onclick="setVal(event,'yes')">✓</button><button class="toggle-btn" data-val="no" onclick="setVal(event,'no')">✗</button></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-icon">🏭</div><div class="section-title">Gestion des stocks</div></div>
+    <div class="options-grid">
+
+      <div class="option-row" onclick="toggle(this)">
+        <span class="option-label">Liste des articles <span class="info-icon">ⓘ</span></span>
+        <div class="tooltip">Catalogue des pièces et produits avec niveaux de stock actuels, seuils de réapprovisionnement et stock minimum. Indispensable pour déclencher les commandes au bon moment.</div>
+        <div class="toggle-group"><button class="toggle-btn" data-val="yes" onclick="setVal(event,'yes')">✓</button><button class="toggle-btn" data-val="no" onclick="setVal(event,'no')">✗</button></div>
+      </div>
+
+      <div class="option-row" onclick="toggle(this)">
+        <span class="option-label">Consultation niveaux de stock <span class="info-icon">ⓘ</span></span>
+        <div class="tooltip">Visualisation des quantités disponibles, des quantités commandées en attente et des besoins prévisionnels. Aide à optimiser le réapprovisionnement et éviter les ruptures.</div>
+        <div class="toggle-group"><button class="toggle-btn" data-val="yes" onclick="setVal(event,'yes')">✓</button><button class="toggle-btn" data-val="no" onclick="setVal(event,'no')">✗</button></div>
+      </div>
+
+      <div class="option-row" onclick="toggle(this)">
+        <span class="option-label">Saisir un mouvement de stock <span class="info-icon">ⓘ</span></span>
+        <div class="tooltip">Enregistrement d'ajustements manuels de stock (différences d'inventaire, retours fournisseurs). À activer si le gestionnaire des achats traite aussi les réceptions physiques.</div>
+        <div class="toggle-group"><button class="toggle-btn" data-val="yes" onclick="setVal(event,'yes')">✓</button><button class="toggle-btn" data-val="no" onclick="setVal(event,'no')">✗</button></div>
+      </div>
+
+      <div class="option-row" onclick="toggle(this)">
+        <span class="option-label">Gestion des comptes articles <span class="info-icon">ⓘ</span></span>
+        <div class="tooltip">Création et modification des fiches articles : ajout de nouvelles références, mise à jour des prix d'achat et paramétrage des seuils de stock minimum et maximum.</div>
+        <div class="toggle-group"><button class="toggle-btn" data-val="yes" onclick="setVal(event,'yes')">✓</button><button class="toggle-btn" data-val="no" onclick="setVal(event,'no')">✗</button></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><div class="section-icon">🌐</div><div class="section-title">Services en ligne</div></div>
+    <div class="options-grid">
+
+      <div class="option-row" onclick="toggle(this)">
+        <span class="option-label">Sage eFature (réception factures) <span class="info-icon">ⓘ</span></span>
+        <div class="tooltip">Réception des factures fournisseurs au format électronique légal (UBL, Factur-X). Permet de traiter automatiquement les factures reçues sans ressaisie manuelle.</div>
+        <div class="toggle-group"><button class="toggle-btn" data-val="yes" onclick="setVal(event,'yes')">✓</button><button class="toggle-btn" data-val="no" onclick="setVal(event,'no')">✗</button></div>
+      </div>
+
+      <div class="option-row" onclick="toggle(this)">
+        <span class="option-label">Accès tableau de bord (IntuiSage) <span class="info-icon">ⓘ</span></span>
+        <div class="tooltip">Page d'accueil avec alertes de réapprovisionnement, commandes en attente de réception et indicateurs achats. Offre une vue rapide de l'état des approvisionnements.</div>
+        <div class="toggle-group"><button class="toggle-btn" data-val="yes" onclick="setVal(event,'yes')">✓</button><button class="toggle-btn" data-val="no" onclick="setVal(event,'no')">✗</button></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="obs-section">
+    <label>Observations / Demandes spécifiques</label>
+    <textarea placeholder="Précisez ici toute remarque, restriction particulière ou demande complémentaire..."></textarea>
+  </div>
+  <div class="form-footer">
+    <div class="footer-info">Sage 100 Gestion Commerciale Premium<br>Document à transmettre au prestataire pour activation</div>
+    <button class="btn-print" onclick="window.print()">🖨 Imprimer / Exporter PDF</button>
+  </div>
+</div>
+<script>
+  document.getElementById('dateField').valueAsDate = new Date();
+  function setVal(e,val){e.stopPropagation();const row=e.target.closest('.option-row');const btns=row.querySelectorAll('.toggle-btn');btns.forEach(b=>{b.classList.remove('active-yes','active-no')});if(val==='yes'){e.target.classList.add('active-yes');row.classList.add('checked');row.classList.remove('blocked')}else{e.target.classList.add('active-no');row.classList.add('blocked');row.classList.remove('checked')}}
+  function toggle(row){const yesBtn=row.querySelector('[data-val="yes"]');const noBtn=row.querySelector('[data-val="no"]');if(!yesBtn.classList.contains('active-yes')&&!noBtn.classList.contains('active-no')){yesBtn.classList.add('active-yes');row.classList.add('checked')}else if(yesBtn.classList.contains('active-yes')){yesBtn.classList.remove('active-yes');noBtn.classList.add('active-no');row.classList.remove('checked');row.classList.add('blocked')}else{noBtn.classList.remove('active-no');row.classList.remove('blocked')}}
+</script>
+</body>
+</html>
